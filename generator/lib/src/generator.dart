@@ -495,16 +495,16 @@ class RetrofitGenerator extends GeneratorForAnnotation<retrofit.RestApi> {
     }
 
     /// gen code for request body for content-type on Protobuf body
-    final annotation = _getAnnotation(m, retrofit.Body);
-    final bodyName = annotation?.element;
-    if (bodyName != null) {
-      if (const TypeChecker.fromRuntime(GeneratedMessage)
-          .isAssignableFromType(bodyName.type)) {
-        extraOptions[_contentType] = literal(
-          'application/x-protobuf; \${${bodyName.displayName}.info_.qualifiedMessageName == "" ? "" :"messageType=\${${bodyName.displayName}.info_.qualifiedMessageName}"}',
-        );
-      }
-    }
+    // final annotation = _getAnnotation(m, retrofit.Body);
+    // final bodyName = annotation?.element;
+    // if (bodyName != null) {
+    //   if (const TypeChecker.fromRuntime(GeneratedMessage)
+    //       .isAssignableFromType(bodyName.type)) {
+    //     extraOptions[_contentType] = literal(
+    //       'application/x-protobuf; \${${bodyName.displayName}.info_.qualifiedMessageName == "" ? "" :"messageType=\${${bodyName.displayName}.info_.qualifiedMessageName}"}',
+    //     );
+    //   }
+    // }
 
     extraOptions[_baseUrlVar] = refer(_baseUrlVar);
 
@@ -915,14 +915,12 @@ You should create a new class to encapsulate the response.
           blocks
             ..add(
               declareFinal(_resultVar)
-                  .assign(
-                    refer('await $_dioVar.fetch<List<int>>').call([options]),
-                  )
+                  .assign(refer('await $_dioVar.fetch').call([options]))
                   .statement,
             )
             ..add(
               Code(
-                'final $_valueVar = await compute(${_displayString(returnType)}.fromBuffer, $_resultVar.data!);',
+                'final $_valueVar = await ${_displayString(returnType)}.create()..mergeFromProto3Json($_resultVar.data!);',
               ),
             );
         } else {
@@ -2214,20 +2212,20 @@ ${bodyName.displayName} == null
     headers.addAll(cacheMap);
 
     /// gen code for request Accept for Protobuf
-    final returnType = _getResponseType(m.returnType);
+    // final returnType = _getResponseType(m.returnType);
 
-    if (returnType != null &&
-        _typeChecker(GeneratedMessage).isAssignableFromType(returnType)) {
-      headers
-        ..removeWhere(
-          (key, value) => 'accept'.toLowerCase() == key.toLowerCase(),
-        )
-        ..addAll({
-          'accept': literal(
-            'application/x-protobuf; \${${_displayString(returnType)}.getDefault().info_.qualifiedMessageName == "" ? "" :"messageType=\${${_displayString(returnType)}.getDefault().info_.qualifiedMessageName}"}',
-          ),
-        });
-    }
+    // if (returnType != null &&
+    //     _typeChecker(GeneratedMessage).isAssignableFromType(returnType)) {
+    //   headers
+    //     ..removeWhere(
+    //       (key, value) => 'accept'.toLowerCase() == key.toLowerCase(),
+    //     )
+    //     ..addAll({
+    //       'accept': literal(
+    //         'application/x-protobuf; \${${_displayString(returnType)}.getDefault().info_.qualifiedMessageName == "" ? "" :"messageType=\${${_displayString(returnType)}.getDefault().info_.qualifiedMessageName}"}',
+    //       ),
+    //     });
+    // }
 
     return headers;
   }
