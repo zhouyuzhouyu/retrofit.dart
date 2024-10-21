@@ -912,9 +912,16 @@ $returnAsyncWrapper httpResponse;
                     '(dynamic i) => i == null ? null : ${_displayString(innerReturnType)}.fromJson(i as $castType)',
                   );
                 } else {
-                  mapperCode = refer(
-                    '(dynamic i) => ${_displayString(innerReturnType)}.fromJson(i as $castType)',
-                  );
+                  if (_typeChecker(GeneratedMessage)
+                      .isSuperTypeOf(innerReturnType!)) {
+                    mapperCode = refer(
+                      '(dynamic i) => ${_displayString(innerReturnType)}.create()..mergeFromProto3Json(i, ignoreUnknownFields: true)',
+                    );
+                  } else {
+                    mapperCode = refer(
+                      '(dynamic i) => ${_displayString(innerReturnType)}.fromJson(i as $castType)',
+                    );
+                  }
                 }
               case retrofit.Parser.DartJsonMapper:
                 mapperCode = refer(
