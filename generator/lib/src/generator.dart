@@ -1118,7 +1118,7 @@ You should create a new class to encapsulate the response.
             )
             ..add(
               Code(
-                'final $_valueVar = await ${_displayString(returnType)}.create()..mergeFromProto3Json($_resultVar.data!, ignoreUnknownFields: true);',
+                'final $_valueVar = ${_displayString(returnType)}.create()..mergeFromProto3Json($_resultVar.data!, ignoreUnknownFields: true);',
               ),
             );
         } else {
